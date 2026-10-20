@@ -1,5 +1,5 @@
 --[[
-	NextUI v1.3.3 ~ by Len
+	KittyUI v1.3.3 ~ by Len
 
 	MIT License
 
@@ -34,15 +34,15 @@ local TextService = game:GetService("TextService")
 local ContentProvider = game:GetService("ContentProvider")
 
 local genv = (getgenv and getgenv()) or _G
-if genv.NextUI and genv.NextUI.Destroy then
-	pcall(genv.NextUI.Destroy, genv.NextUI)
+if genv.KittyUI and genv.KittyUI.Destroy then
+	pcall(genv.KittyUI.Destroy, genv.KittyUI)
 end
 
 local function C(r, g, b) return Color3.fromRGB(r, g, b) end
 
-local INTRO_ICON = "https://diser.me/nextui/next.png"
+local INTRO_ICON = "https://diser.me/KittyUI/next.png"
 local INTRO_TITLE = "Next Development"
-local INTRO_SUBTITLE = "UI by diser.me/nextui/"
+local INTRO_SUBTITLE = "UI by diser.me/KittyUI/"
 
 local Themes = {
 	Crimson = { Window = C(19, 19, 19), Side = C(14, 14, 14), Panel = C(17, 17, 17), Card = C(13, 13, 13), Element = C(27, 27, 27), Hover = C(38, 38, 38), Border = C(7, 7, 7), Accent = C(255, 24, 24), Text = C(240, 240, 240), Sub = C(112, 112, 112), Off = C(34, 34, 34) },
@@ -67,14 +67,14 @@ end
 
 local ThemeOrder = { "Rose", "Crimson", "Onyx", "Dark", "Darker", "Light", "Aqua", "Lagoon", "Amethyst", "Emerald", "Toxic", "Noir" }
 
-local NextUI = {
+local KittyUI = {
 	Version = "1.3.2",
 	Flags = {},
 	Options = {},
 	ThemeName = "Rose",
 	ThemeOrder = table.clone(ThemeOrder),
 	ToggleKeys = { Enum.KeyCode.Insert, Enum.KeyCode.RightShift },
-	ConfigFolder = "NextUI",
+	ConfigFolder = "KittyUI",
 	Windows = {},
 	_conns = {}, _glass = {}, _glassLayers = {}, _binds = {}, _paints = {}, _drops = {}, _configLists = {}, _tips = {}, _index = {}, _scrollers = {},
 	TipLength = 16,
@@ -94,7 +94,7 @@ local TitleSmall = {
 }
 local function TC(s)
 	s = tostring(s == nil and "" or s)
-	if NextUI.TitleCase == false then return s end
+	if KittyUI.TitleCase == false then return s end
 	local total = 0
 	for _ in s:gmatch("%S+") do total = total + 1 end
 	local n, force = 0, true
@@ -120,7 +120,7 @@ end
 local T = { Font = Enum.Font.BuilderSansMedium, FontBold = Enum.Font.BuilderSansBold, FontBlack = Enum.Font.BuilderSansExtraBold }
 for k, v in pairs(Themes.Rose) do T[k] = v end
 T.OnAccent = Color3.new(1, 1, 1)
-NextUI.Theme = T
+KittyUI.Theme = T
 
 local GLASS_KEYS = { Window = true, Side = true, Panel = true, Card = true, Element = true }
 local Lighting = game:GetService("Lighting")
@@ -136,7 +136,7 @@ local function glassAlpha(key, base)
 	if not g or not g[key] then return base end
 	return base + (1 - base) * g[key]
 end
-NextUI.GlassAlpha = glassAlpha
+KittyUI.GlassAlpha = glassAlpha
 
 local BLUR_DIST = 0.001
 local CORNER_STEPS = 14
@@ -147,7 +147,7 @@ local blurSlots = {}
 
 local function newSlot()
 	local part = Instance.new("Part")
-	part.Name = "NextUI_Glass"
+	part.Name = "KittyUI_Glass"
 	part.Color = Color3.new(0, 0, 0)
 	part.Material = Enum.Material.Glass
 	part.Size = Vector3.new(1, 1, 0)
@@ -217,7 +217,7 @@ local function blurStep()
 	if not cam then return end
 
 	local main
-	for _, w in ipairs(NextUI.Windows) do
+	for _, w in ipairs(KittyUI.Windows) do
 		if w.Visible and w._main and w._main.Parent and w._main.Visible then main = w._main break end
 	end
 	if not main then
@@ -225,7 +225,7 @@ local function blurStep()
 		return
 	end
 
-	local gs = NextUI.Gui and NextUI.Gui.AbsoluteSize
+	local gs = KittyUI.Gui and KittyUI.Gui.AbsoluteSize
 	local pos, size = main.AbsolutePosition, main.AbsoluteSize
 	if gs and gs.X > 0 and gs.Y > 0 then
 		local mp, ms = main.Position, main.Size
@@ -239,9 +239,9 @@ local function blurStep()
 		pos = Vector2.new(pos.X * k.X, pos.Y * k.Y)
 		size = Vector2.new(size.X * k.X, size.Y * k.Y)
 	end
-	pos = pos + (NextUI.GlassBlurOffset or Vector2.zero)
+	pos = pos + (KittyUI.GlassBlurOffset or Vector2.zero)
 
-	local ins = NextUI.GlassBlurInset or 6
+	local ins = KittyUI.GlassBlurInset or 6
 	local x0, y0 = pos.X + ins, pos.Y + ins
 	local x1, y1 = pos.X + size.X - ins, pos.Y + size.Y - ins
 	local w, h = x1 - x0, y1 - y0
@@ -251,7 +251,7 @@ local function blurStep()
 	end
 
 	local k = size.X / math.max(main.Size.X.Offset, 1)
-	local radius = ((NextUI.GlassBlurRadius or BASE_RADIUS) * k) + ins * 0.5
+	local radius = ((KittyUI.GlassBlurRadius or BASE_RADIUS) * k) + ins * 0.5
 	radius = math.clamp(radius, 0, math.min(w, h) / 2)
 
 	local idx = 1
@@ -278,17 +278,17 @@ end
 
 local function startBlur()
 	if blurDOF or blurConn then return end
-	if NextUI.BlurMode == "Screen" then
+	if KittyUI.BlurMode == "Screen" then
 		local fx = Instance.new("BlurEffect")
-		fx.Name = "NextUI_Blur"
+		fx.Name = "KittyUI_Blur"
 		fx.Size = 0
 		pcall(function() fx.Parent = Lighting end)
 		blurDOF = fx
-		TS:Create(fx, TweenInfo.new(0.25, Enum.EasingStyle.Quad), { Size = NextUI.BlurSize or 16 }):Play()
+		TS:Create(fx, TweenInfo.new(0.25, Enum.EasingStyle.Quad), { Size = KittyUI.BlurSize or 16 }):Play()
 		return
 	end
 	local dof = Instance.new("DepthOfFieldEffect")
-	dof.Name = "NextUI_Blur"
+	dof.Name = "KittyUI_Blur"
 	dof.FarIntensity = 0
 	dof.InFocusRadius = 0.1
 	dof.FocusDistance = 0.05
@@ -301,26 +301,26 @@ end
 
 local function updateBlur()
 	local want = false
-	if glassOn and NextUI.GlassBlur ~= false then
-		for _, w in ipairs(NextUI.Windows) do
+	if glassOn and KittyUI.GlassBlur ~= false then
+		for _, w in ipairs(KittyUI.Windows) do
 			if w.Visible and w._main and w._main.Parent then want = true break end
 		end
 	end
 	if want then startBlur() else stopBlur() end
 end
-NextUI.UpdateBlur = updateBlur
+KittyUI.UpdateBlur = updateBlur
 
-function NextUI:SetBlurSize(v)
+function KittyUI:SetBlurSize(v)
 	self.BlurSize = math.clamp(tonumber(v) or 16, 0, 56)
 	if blurDOF and blurDOF:IsA("BlurEffect") then blurDOF.Size = self.BlurSize end
 end
 
-function NextUI:SetGlassBlur(v)
+function KittyUI:SetGlassBlur(v)
 	self.GlassBlur = v and true or false
 	updateBlur()
 end
 
-local ICON_CACHE_FILE = "NextUI/icons.lua"
+local ICON_CACHE_FILE = "KittyUI/icons.lua"
 
 local function ensureFolder(path)
 	pcall(function()
@@ -331,7 +331,7 @@ end
 local IconAssets = {}
 do
 	local urls = {
-		"https://diser.me/nextui/icons.lua",
+		"https://diser.me/KittyUI/icons.lua",
 		"https://raw.githubusercontent.com/dawid-scripts/Fluent/refs/heads/master/src/Icons.lua",
 	}
 
@@ -357,7 +357,7 @@ do
 
 	local function saveCache(code)
 		if not (writefile and code) then return end
-		ensureFolder("NextUI")
+		ensureFolder("KittyUI")
 		pcall(writefile, ICON_CACHE_FILE, code)
 	end
 
@@ -385,10 +385,10 @@ do
 		end
 	end
 end
-NextUI.Icons = IconAssets
+KittyUI.Icons = IconAssets
 
-local preloaded = genv.NextUIPreloaded or {}
-genv.NextUIPreloaded = preloaded
+local preloaded = genv.KittyUIPreloaded or {}
+genv.KittyUIPreloaded = preloaded
 
 local iconsReady = true
 local iconQueue, iconQueued = {}, {}
@@ -440,11 +440,11 @@ local function urlAsset(url)
 	if not getAsset then return nil, "getcustomasset is not supported by your executor" end
 	pcall(function()
 		if makefolder and isfolder then
-			if not isfolder("NextUI") then makefolder("NextUI") end
-			if not isfolder("NextUI/cache") then makefolder("NextUI/cache") end
+			if not isfolder("KittyUI") then makefolder("KittyUI") end
+			if not isfolder("KittyUI/cache") then makefolder("KittyUI/cache") end
 		end
 	end)
-	local path = "NextUI/cache/" .. url:gsub("[^%w]", "_"):sub(-80) .. ".png"
+	local path = "KittyUI/cache/" .. url:gsub("[^%w]", "_"):sub(-80) .. ".png"
 	if not isfile(path) then
 		local ok, data = pcall(function() return game:HttpGet(url) end)
 		if not ok then return nil, "download failed: " .. tostring(data) end
@@ -484,13 +484,13 @@ local function resolveIcon(name)
 	return found
 end
 
-function NextUI:GetIcon(name) return resolveIcon(name) end
+function KittyUI:GetIcon(name) return resolveIcon(name) end
 
-function NextUI:PreloadAllIcons()
+function KittyUI:PreloadAllIcons()
 	for _, id in pairs(IconAssets) do queueIcon(id) end
 end
 
-local function fs(n) return math.floor(n * (NextUI.TextScale or 1) + 0.5) end
+local function fs(n) return math.floor(n * (KittyUI.TextScale or 1) + 0.5) end
 
 local function New(class, props, kids)
 	local o = Instance.new(class)
@@ -502,7 +502,7 @@ local function New(class, props, kids)
 		elseif type(v) == "string" and v:sub(1, 1) == "$" and k:find("Color") then
 			local key = v:sub(2)
 			o[k] = T[key]
-			table.insert(NextUI._binds, { o, k, key })
+			table.insert(KittyUI._binds, { o, k, key })
 		else
 			o[k] = v
 		end
@@ -513,7 +513,7 @@ local function New(class, props, kids)
 		local key = props.GlassKey or bg:sub(2)
 		if GLASS_KEYS[key] or key == "Popup" or key == "Hide" then
 			local base = o.BackgroundTransparency
-			table.insert(NextUI._glass, { o, base, key })
+			table.insert(KittyUI._glass, { o, base, key })
 			if T.Glass then o.BackgroundTransparency = glassAlpha(key, base) end
 		end
 	end
@@ -537,7 +537,7 @@ local function GlassLayer(parent, key, patches)
 		p.BackgroundColor3, p.GlassKey, p.BorderSizePixel, p.Parent = "$" .. key, "Solid", 0, group
 		New("Frame", p)
 	end
-	table.insert(NextUI._glassLayers, { group, key })
+	table.insert(KittyUI._glassLayers, { group, key })
 	return group
 end
 
@@ -634,7 +634,7 @@ local function loadIcon(icon, id)
 			icon.Image = a
 			return true
 		end
-		warn("[NextUI] Image link failed (" .. id .. "): " .. tostring(why))
+		warn("[KittyUI] Image link failed (" .. id .. "): " .. tostring(why))
 		icon.Image = ""
 		return false
 	end
@@ -687,7 +687,7 @@ end
 
 local function connect(signal, fn)
 	local c = signal:Connect(fn)
-	table.insert(NextUI._conns, c)
+	table.insert(KittyUI._conns, c)
 	return c
 end
 
@@ -696,7 +696,7 @@ local function isMove(i) return i.UserInputType == Enum.UserInputType.MouseMovem
 
 local function cutText(s, max)
 	s = tostring(s or "")
-	max = max or NextUI.TipLength or 16
+	max = max or KittyUI.TipLength or 16
 	local len = utf8.len(s)
 	if not len or len <= max then return s, false end
 	return s:sub(1, utf8.offset(s, max + 1) - 1) .. "...", true
@@ -707,7 +707,7 @@ local function attachTip(label, full, noCut, max)
 	if not noCut then short, cut = cutText(full, max) end
 	label.Text = short
 
-	table.insert(NextUI._tips, { label = label, text = tostring(full or ""), cut = cut })
+	table.insert(KittyUI._tips, { label = label, text = tostring(full or ""), cut = cut })
 end
 
 local function inside(o, p)
@@ -753,10 +753,10 @@ local function setupTooltip(gui)
 	local function update(pos)
 		lastPos = pos
 		local found
-		for i = #NextUI._tips, 1, -1 do
-			local t = NextUI._tips[i]
+		for i = #KittyUI._tips, 1, -1 do
+			local t = KittyUI._tips[i]
 			if not t.label.Parent then
-				table.remove(NextUI._tips, i)
+				table.remove(KittyUI._tips, i)
 			elseif not found and t.text ~= "" and (not t.needVisible or t.label.Visible) and hoverable(t.label, pos) and (t.cut or not t.label.TextFits) then
 				found = t
 			end
@@ -782,7 +782,7 @@ end
 local function safe(fn, ...)
 	if fn then
 		local ok, err = pcall(fn, ...)
-		if not ok then warn("[NextUI] " .. tostring(err)) end
+		if not ok then warn("[KittyUI] " .. tostring(err)) end
 	end
 end
 
@@ -808,7 +808,7 @@ local function bindMatch(i, key)
 	return i.UserInputType == key
 end
 
-function NextUI:SetMenuKey(k)
+function KittyUI:SetMenuKey(k)
 	local keys = { Enum.KeyCode.Insert }
 	if typeof(k) == "EnumItem" and k.EnumType == Enum.KeyCode and k ~= Enum.KeyCode.Insert then
 		table.insert(keys, k)
@@ -837,7 +837,7 @@ local function isShown(inst, cache)
 	return r
 end
 
-function NextUI:_ApplyGlass()
+function KittyUI:_ApplyGlass()
 	T.Glass = glassOn and GLASS or nil
 
 	local gl, gw = self._glass, 0
@@ -872,13 +872,13 @@ function NextUI:_ApplyGlass()
 	if self._glassPaint then pcall(self._glassPaint) end
 end
 
-function NextUI:SetGlass(v)
+function KittyUI:SetGlass(v)
 	glassOn = v and true or false
 	self:_ApplyGlass()
 	return glassOn
 end
 
-function NextUI:GetGlass() return glassOn end
+function KittyUI:GetGlass() return glassOn end
 
 local THEME_SWEEP = 0.9
 local THEME_SNAP = 0.14
@@ -907,7 +907,7 @@ local function wipeable(inst, prop, wd)
 	return prop == "Color" and inst:IsA("UIStroke")
 end
 
-function NextUI:_CancelWipes()
+function KittyUI:_CancelWipes()
 	local wipes = self._wipes
 	for grad, w in pairs(wipes) do
 		wipes[grad] = nil
@@ -918,12 +918,12 @@ function NextUI:_CancelWipes()
 	end
 end
 
-function NextUI:_RunSweep(gen, list, minX, span)
+function KittyUI:_RunSweep(gen, list, minX, span)
 	if #list == 0 then return end
 	local t0 = os.clock()
 	local conn
 	conn = RunService.Heartbeat:Connect(function()
-		if NextUI._themeGen ~= gen then
+		if KittyUI._themeGen ~= gen then
 			conn:Disconnect()
 			return
 		end
@@ -951,11 +951,11 @@ function NextUI:_RunSweep(gen, list, minX, span)
 						inst[w.prop] = WHITE
 						grad.Parent = inst
 						w.grad = grad
-						NextUI._wipes[grad] = { inst, w.prop, from }
+						KittyUI._wipes[grad] = { inst, w.prop, from }
 					end
 					local o = math.clamp((bx - w.x) / w.wd, 0, 1)
 					if o >= 1 or f >= 1 then
-						NextUI._wipes[w.grad] = nil
+						KittyUI._wipes[w.grad] = nil
 						w.grad:Destroy()
 						inst[w.prop] = w.to
 						w.done = true
@@ -1020,11 +1020,11 @@ local function spawnBand(win)
 	end)
 end
 
-function NextUI:_AddPaint(fn, inst)
+function KittyUI:_AddPaint(fn, inst)
 	table.insert(self._paints, { fn, inst })
 end
 
-function NextUI:SetTheme(name, instant)
+function KittyUI:SetTheme(name, instant)
 	local th = type(name) == "string" and Themes[name]
 	if not th then return false end
 	self.ThemeName = name
@@ -1144,7 +1144,7 @@ function NextUI:SetTheme(name, instant)
 		for _, step in ipairs(order) do
 			local bk = buckets[step]
 			local function run()
-				if NextUI._themeGen ~= gen then return end
+				if KittyUI._themeGen ~= gen then return end
 				for _, j in ipairs(bk.jobs) do
 					if j[1].Parent then
 						TS:Create(j[1], snap, { [j[2]] = j[3] }):Play()
@@ -1179,7 +1179,7 @@ local function loadNotify()
 	return Notify
 end
 
-function NextUI:Notify(o)
+function KittyUI:Notify(o)
 	local n = loadNotify()
 	if not n then return end
 	if type(o) == "table" then
@@ -1195,7 +1195,7 @@ function NextUI:Notify(o)
 end
 
 for _, name in ipairs({ "Info", "Success", "Warning", "Error" }) do
-	NextUI[name] = function(self, title, content, duration)
+	KittyUI[name] = function(self, title, content, duration)
 		local n = loadNotify()
 		if n then return n[name](n, TC(title), content, duration) end
 	end
@@ -1214,21 +1214,21 @@ local function uiScaleOf(o)
 end
 
 local function ensureScrollHook()
-	if NextUI._scrollHooked then return end
-	NextUI._scrollHooked = true
+	if KittyUI._scrollHooked then return end
+	KittyUI._scrollHooked = true
 	connect(UIS.InputChanged, function(i)
 		if not isMove(i) then return end
-		local d = NextUI._scrollDrag
+		local d = KittyUI._scrollDrag
 		if d then
 			d.dragTo(i.Position.Y)
 			return
 		end
 		if i.UserInputType ~= Enum.UserInputType.MouseMovement then return end
 		local pos = Vector2.new(i.Position.X, i.Position.Y)
-		for idx = #NextUI._scrollers, 1, -1 do
-			local s = NextUI._scrollers[idx]
+		for idx = #KittyUI._scrollers, 1, -1 do
+			local s = KittyUI._scrollers[idx]
 			if not s.holder.Parent then
-				table.remove(NextUI._scrollers, idx)
+				table.remove(KittyUI._scrollers, idx)
 			else
 				local over = s.thumb.Visible and hoverable(s.sf, pos, s.ignoreCovered) or false
 				if over ~= s.hover then
@@ -1239,9 +1239,9 @@ local function ensureScrollHook()
 		end
 	end)
 	connect(UIS.InputEnded, function(i)
-		local d = NextUI._scrollDrag
+		local d = KittyUI._scrollDrag
 		if d and isPress(i) then
-			NextUI._scrollDrag = nil
+			KittyUI._scrollDrag = nil
 			d.drag = false
 			d.refresh()
 		end
@@ -1301,7 +1301,7 @@ local function Scroller(sf, ignoreCovered)
 	thumb.InputBegan:Connect(function(i)
 		if isPress(i) then
 			s.drag, s.startY, s.startPos = true, i.Position.Y, sf.CanvasPosition.Y
-			NextUI._scrollDrag = s
+			KittyUI._scrollDrag = s
 			s.refresh()
 		end
 	end)
@@ -1321,7 +1321,7 @@ local function Scroller(sf, ignoreCovered)
 		sf:GetPropertyChangedSignal(prop):Connect(function() holder[prop] = sf[prop] end)
 	end
 
-	table.insert(NextUI._scrollers, s)
+	table.insert(KittyUI._scrollers, s)
 	ensureScrollHook()
 	task.defer(s.refresh)
 	return s
@@ -1345,7 +1345,7 @@ local function Spinner(parent, size, props)
 		ring.Visible = on and true or false
 		if on and not conn then
 			conn = RunService.RenderStepped:Connect(function(dt) grad.Rotation = (grad.Rotation + 420 * dt) % 360 end)
-			table.insert(NextUI._conns, conn)
+			table.insert(KittyUI._conns, conn)
 		elseif not on and conn then
 			conn:Disconnect()
 			conn = nil
@@ -1396,14 +1396,14 @@ local function lockable(host, o, obj, dropKey, onChange)
 	}, { Corner(5) })
 
 	local reason = { label = shield, text = tostring(o.LockedReason or ""), cut = true, needVisible = true }
-	table.insert(NextUI._tips, reason)
+	table.insert(KittyUI._tips, reason)
 	function obj:SetLockedReason(text) reason.text = text ~= nil and tostring(text) or "" end
 
 	function obj:SetLocked(v, why)
 		if why ~= nil then reason.text = tostring(why) end
 		locked = v and true or false
 		if locked then
-			local d = NextUI._drops[dropKey or host]
+			local d = KittyUI._drops[dropKey or host]
 			if d then pcall(d, false) end
 			shield.Visible = true
 			Tween(shield, { BackgroundTransparency = 0.45 }, 0.15)
@@ -1417,8 +1417,8 @@ local function lockable(host, o, obj, dropKey, onChange)
 	if o.Locked == true then obj:SetLocked(true) end
 end
 
-function NextUI._toggleDrop(frame)
-	for f, fn in pairs(NextUI._drops) do
+function KittyUI._toggleDrop(frame)
+	for f, fn in pairs(KittyUI._drops) do
 		if f == frame then fn() else fn(false) end
 	end
 end
@@ -1430,7 +1430,7 @@ local function makeDrop(f, h, bodyH)
 		Tween(f, { Size = UDim2.new(1, 0, 0, open and (h + bodyH()) or h) }, 0.18)
 		return open
 	end
-	NextUI._drops[f] = set
+	KittyUI._drops[f] = set
 	return set
 end
 
@@ -1476,7 +1476,7 @@ local function Elements(self, getParent)
 	local function index(title, desc, frame)
 		local ctx = self._ctx
 		if ctx and title and title ~= "" then
-			table.insert(NextUI._index, { title = TC(title), desc = desc, frame = frame, ctx = ctx })
+			table.insert(KittyUI._index, { title = TC(title), desc = desc, frame = frame, ctx = ctx })
 		end
 	end
 
@@ -1507,8 +1507,8 @@ local function Elements(self, getParent)
 
 	local function register(flag, obj, value)
 		if flag then
-			NextUI.Flags[flag] = value
-			NextUI.Options[flag] = obj
+			KittyUI.Flags[flag] = value
+			KittyUI.Options[flag] = obj
 		end
 	end
 
@@ -1558,7 +1558,7 @@ local function Elements(self, getParent)
 			Position = UDim2.fromOffset(12, d and 10 or 0), Size = UDim2.new(1, -(40 + (bw and (bw + 6) or 0)), 0, d and 18 or h),
 			TextTruncate = Enum.TextTruncate.AtEnd,
 		})
-		attachTip(btnLabel, TC(o.Title or o.Name or ""), false, NextUI.ButtonTipLength)
+		attachTip(btnLabel, TC(o.Title or o.Name or ""), false, KittyUI.ButtonTipLength)
 		attachBadge(btnLabel, badge, 12, d and 19 or h / 2)
 		index(o.Title or o.Name, o.Description, f)
 		if d then
@@ -1591,7 +1591,7 @@ local function Elements(self, getParent)
 			local done = false
 			task.spawn(function()
 				local ok, err = pcall(o.Callback)
-				if not ok then warn("[NextUI] " .. tostring(err)) end
+				if not ok then warn("[KittyUI] " .. tostring(err)) end
 				done = true
 				if auto then
 					auto = false
@@ -1673,7 +1673,7 @@ local function Elements(self, getParent)
 		function obj:Set(v, silent)
 			state = v and true or false
 			paint()
-			if o.Flag then NextUI.Flags[o.Flag] = state end
+			if o.Flag then KittyUI.Flags[o.Flag] = state end
 			if not silent then safe(o.Callback, state) end
 		end
 		function obj:Get() return state end
@@ -1694,13 +1694,13 @@ local function Elements(self, getParent)
 			end
 			local function setKey(k)
 				key, listening = k, false
-				NextUI._listening = false
+				KittyUI._listening = false
 				paintKey()
-				if o.Flag then NextUI.Flags[o.Flag .. "_key"] = k end
+				if o.Flag then KittyUI.Flags[o.Flag .. "_key"] = k end
 			end
 			function obj:SetKey(k) setKey(k) end
 			function obj:GetKey() return key end
-			btn.MouseButton1Click:Connect(function() listening = not listening NextUI._listening = listening paintKey() end)
+			btn.MouseButton1Click:Connect(function() listening = not listening KittyUI._listening = listening paintKey() end)
 			connect(UIS.InputBegan, function(i, gp)
 				if listening then
 					local t = i.UserInputType
@@ -1717,14 +1717,14 @@ local function Elements(self, getParent)
 			connect(UIS.InputEnded, function(i)
 				if mode == "Hold" and state and bindMatch(i, key) then obj:Set(false) end
 			end)
-			NextUI:_AddPaint(paintKey, f)
+			KittyUI:_AddPaint(paintKey, f)
 			if o.Flag then
 				register(o.Flag .. "_key", { Set = function(_, k) setKey(k) end, Get = function() return key end }, key)
 			end
 			paintKey()
 		end
 
-		NextUI:_AddPaint(paint, f)
+		KittyUI:_AddPaint(paint, f)
 		register(o.Flag, obj, false)
 		obj:Set(o.Default or false, true)
 		lockable(f, o, obj)
@@ -1755,7 +1755,7 @@ local function Elements(self, getParent)
 			local a = (max == min) and 0 or (v - min) / (max - min)
 			Tween(fill, { Size = UDim2.fromScale(a, 1) }, 0.06)
 			val.Text = tostring(v) .. (o.Suffix or "")
-			if o.Flag then NextUI.Flags[o.Flag] = v end
+			if o.Flag then KittyUI.Flags[o.Flag] = v end
 			if not silent then safe(o.Callback, v) end
 		end
 		function obj:Get() return value end
@@ -1772,7 +1772,7 @@ local function Elements(self, getParent)
 		function obj:SetToggle(v, silent)
 			toggled = v and true or false
 			paintToggle()
-			if tflag then NextUI.Flags[tflag] = toggled end
+			if tflag then KittyUI.Flags[tflag] = toggled end
 			if not silent then safe(o.ToggleCallback, toggled) end
 		end
 		function obj:GetToggle() return toggled end
@@ -1782,7 +1782,7 @@ local function Elements(self, getParent)
 				AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -2, 0, 20), Size = UDim2.fromOffset(42, 28),
 				BackgroundTransparency = 1, Text = "", Parent = f,
 			}).MouseButton1Click:Connect(function() obj:SetToggle(not toggled) end)
-			NextUI:_AddPaint(paintToggle, f)
+			KittyUI:_AddPaint(paintToggle, f)
 			if tflag then
 				register(tflag, { Set = function(_, v, silent) obj:SetToggle(v, silent) end, Get = function() return toggled end }, toggled)
 			end
@@ -1842,7 +1842,7 @@ local function Elements(self, getParent)
 		})
 		local arrow = Icon(box, "chevron-down", 12, "Sub", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0) })
 
-		local win = (self._ctx and self._ctx.win) or NextUI.Windows[#NextUI.Windows]
+		local win = (self._ctx and self._ctx.win) or KittyUI.Windows[#KittyUI.Windows]
 		local obj, sel, cur, items = {}, {}, nil, {}
 		local popup, open = nil, false
 		local ROW, MAXV = 28, 6
@@ -1875,7 +1875,7 @@ local function Elements(self, getParent)
 			end
 		end
 		local function fire(silent)
-			if o.Flag then NextUI.Flags[o.Flag] = result() end
+			if o.Flag then KittyUI.Flags[o.Flag] = result() end
 			if not silent then safe(o.Callback, result()) end
 		end
 
@@ -2045,7 +2045,7 @@ local function Elements(self, getParent)
 			if want then openPop() else close() end
 			return open
 		end
-		NextUI._drops[f] = toggle
+		KittyUI._drops[f] = toggle
 
 		function obj:Set(v, silent)
 			sel, cur = {}, nil
@@ -2066,9 +2066,9 @@ local function Elements(self, getParent)
 		end
 
 		New("TextButton", { Size = UDim2.new(1, 0, 0, h), BackgroundTransparency = 1, Text = "", Parent = f }).MouseButton1Click:Connect(function()
-			NextUI._toggleDrop(f)
+			KittyUI._toggleDrop(f)
 		end)
-		NextUI:_AddPaint(paint, f)
+		KittyUI:_AddPaint(paint, f)
 		paint()
 		register(o.Flag, obj, multi and {} or nil)
 		if o.Default ~= nil then obj:Set(o.Default, true) end
@@ -2093,11 +2093,11 @@ local function Elements(self, getParent)
 		box.FocusLost:Connect(function(enter)
 			Tween(st, { Color = T.Border, Transparency = 0.3 })
 			if o.Numeric then box.Text = tostring(tonumber(box.Text) or "") end
-			if o.Flag then NextUI.Flags[o.Flag] = box.Text end
+			if o.Flag then KittyUI.Flags[o.Flag] = box.Text end
 			if o.Finished == false or enter then safe(o.Callback, box.Text, enter) end
 		end)
 		local obj = {}
-		function obj:Set(s) box.Text = s if o.Flag then NextUI.Flags[o.Flag] = s end end
+		function obj:Set(s) box.Text = s if o.Flag then KittyUI.Flags[o.Flag] = s end end
 		function obj:Get() return box.Text end
 		register(o.Flag, obj, box.Text)
 		lockable(f, o, obj, nil, function(l) box.TextEditable = not l end)
@@ -2121,15 +2121,15 @@ local function Elements(self, getParent)
 		end
 
 		function obj:Set(k)
-			key = k listening = false NextUI._listening = false paint()
-			if o.Flag then NextUI.Flags[o.Flag] = k end
-			if o.MenuKey then NextUI:SetMenuKey(k) end
+			key = k listening = false KittyUI._listening = false paint()
+			if o.Flag then KittyUI.Flags[o.Flag] = k end
+			if o.MenuKey then KittyUI:SetMenuKey(k) end
 		end
 		function obj:Get() return key end
 		function obj:GetState() return state end
 		btn.MouseButton1Click:Connect(function()
 			listening = not listening
-			NextUI._listening = listening
+			KittyUI._listening = listening
 			paint()
 		end)
 		connect(UIS.InputBegan, function(i, gp)
@@ -2158,10 +2158,10 @@ local function Elements(self, getParent)
 		connect(UIS.InputEnded, function(i)
 			if mode == "Hold" and state and bindMatch(i, key) then state = false safe(o.Callback, false) end
 		end)
-		NextUI:_AddPaint(paint, f)
+		KittyUI:_AddPaint(paint, f)
 		register(o.Flag, obj, key)
 		paint()
-		if o.MenuKey then NextUI:SetMenuKey(key) end
+		if o.MenuKey then KittyUI:SetMenuKey(key) end
 		lockable(f, o, obj)
 		return obj
 	end
@@ -2200,7 +2200,7 @@ local function Elements(self, getParent)
 			cur.Position = UDim2.fromScale(ss, 1 - vv)
 			hcur.Position = UDim2.new(0.5, 0, hh, 0)
 			preview.BackgroundColor3 = color
-			if o.Flag then NextUI.Flags[o.Flag] = color end
+			if o.Flag then KittyUI.Flags[o.Flag] = color end
 			if not silent then safe(o.Callback, color) end
 		end
 		local function drag(pos)
@@ -2219,7 +2219,7 @@ local function Elements(self, getParent)
 
 		makeDrop(f, h, function() return 112 end)
 		New("TextButton", { Size = UDim2.new(1, 0, 0, h), BackgroundTransparency = 1, Text = "", Parent = f }).MouseButton1Click:Connect(function()
-			NextUI._toggleDrop(f)
+			KittyUI._toggleDrop(f)
 		end)
 		function obj:Set(c, silent) hh, ss, vv = c:ToHSV() apply(silent) end
 		function obj:Get() return color end
@@ -2269,7 +2269,7 @@ local function Elements(self, getParent)
 			if a > b then a, b = b, a end
 			lo, hi = a, b
 			paint()
-			if o.Flag then NextUI.Flags[o.Flag] = { lo, hi } end
+			if o.Flag then KittyUI.Flags[o.Flag] = { lo, hi } end
 			if not silent then safe(o.Callback, lo, hi) end
 		end
 		function obj:Set(v, silent)
@@ -2377,7 +2377,7 @@ local function Elements(self, getParent)
 			end
 			return open
 		end
-		NextUI._drops[f] = toggle
+		KittyUI._drops[f] = toggle
 
 		local function count()
 			local n = 0
@@ -2431,7 +2431,7 @@ local function Elements(self, getParent)
 		end
 		fire = function(silent)
 			local r = result()
-			if o.Flag then NextUI.Flags[o.Flag] = r end
+			if o.Flag then KittyUI.Flags[o.Flag] = r end
 			if not silent then safe(o.Callback, r) end
 		end
 		local function build()
@@ -2475,8 +2475,8 @@ local function Elements(self, getParent)
 			fire(true)
 		end
 
-		boxBtn.MouseButton1Click:Connect(function() NextUI._toggleDrop(f) end)
-		NextUI:_AddPaint(paintAll, f)
+		boxBtn.MouseButton1Click:Connect(function() KittyUI._toggleDrop(f) end)
+		KittyUI:_AddPaint(paintAll, f)
 		register(o.Flag, obj, {})
 		build()
 		if o.Default ~= nil then obj:Set(o.Default, true) else paintAll() end
@@ -2509,7 +2509,7 @@ local function Elements(self, getParent)
 			else
 				val.Text = tostring(math.floor(a * 100 + 0.5)) .. "%"
 			end
-			if o.Flag then NextUI.Flags[o.Flag] = value end
+			if o.Flag then KittyUI.Flags[o.Flag] = value end
 			if not silent then safe(o.Callback, value) end
 		end
 		function obj:Get() return value end
@@ -2575,7 +2575,7 @@ local function Elements(self, getParent)
 				if loadIcon(img, v) then
 					Tween(img, { ImageTransparency = 0 }, 0.25)
 				else
-					warn("[NextUI] Image could not be loaded: " .. tostring(v))
+					warn("[KittyUI] Image could not be loaded: " .. tostring(v))
 				end
 			end)
 		end
@@ -2610,7 +2610,7 @@ local function Elements(self, getParent)
 		local current
 		local function choose(t, instant)
 			if not t then return end
-			NextUI._toggleDrop(nil)
+			KittyUI._toggleDrop(nil)
 			current = t
 			for _, x in ipairs(tabs._list) do
 				x.page.Visible = x == t
@@ -2626,7 +2626,7 @@ local function Elements(self, getParent)
 			slider.Size = UDim2.new(1 / n, 0, 1, 0)
 			if current then slider.Position = UDim2.new((current.index - 1) / n, 0, 0, 0) end
 		end
-		NextUI:_AddPaint(function()
+		KittyUI:_AddPaint(function()
 			for _, t in ipairs(tabs._list) do t.label.TextColor3 = t == current and T.Accent or T.Sub end
 		end, bar)
 
@@ -2681,28 +2681,28 @@ local function Elements(self, getParent)
 		o = o or {}
 		local list = self:AddDropdown({
 			Title = o.Title or "Config", Description = o.Description or "Saved configs in your workspace",
-			Flag = o.Flag or "_config_select", Values = NextUI:ListConfigs(),
+			Flag = o.Flag or "_config_select", Values = KittyUI:ListConfigs(),
 		})
-		table.insert(NextUI._configLists, list)
+		table.insert(KittyUI._configLists, list)
 		local nameBox = self:AddTextbox({
 			Title = "New config name", Description = "Existing names get (1), (2) and so on",
 			Flag = (o.Flag and (o.Flag .. "_name")) or "_config_name", Placeholder = "my config",
 		})
 		local function selected()
 			local name = list:Get()
-			if not name then NextUI:Warning("No config", "Select a config first.") end
+			if not name then KittyUI:Warning("No config", "Select a config first.") end
 			return name
 		end
 
 		self:AddButton({
 			Title = "Save config", Description = "Creates a new config from the name above",
 			Callback = function()
-				local name = NextUI:CreateConfig(nameBox:Get())
+				local name = KittyUI:CreateConfig(nameBox:Get())
 				if name then
 					nameBox:Set("")
-					NextUI:Success("Config saved", name)
+					KittyUI:Success("Config saved", name)
 				else
-					NextUI:Error("Could not save", "Your executor has no file access.")
+					KittyUI:Error("Could not save", "Your executor has no file access.")
 				end
 			end,
 		})
@@ -2711,7 +2711,7 @@ local function Elements(self, getParent)
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if NextUI:UpdateConfig(name) then NextUI:Success("Config updated", name) else NextUI:Error("Could not update", "Your executor has no file access.") end
+				if KittyUI:UpdateConfig(name) then KittyUI:Success("Config updated", name) else KittyUI:Error("Could not update", "Your executor has no file access.") end
 			end,
 		})
 		self:AddButton({
@@ -2719,11 +2719,11 @@ local function Elements(self, getParent)
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if NextUI:LoadConfig(name) then
-					NextUI:Success("Config loaded", name)
+				if KittyUI:LoadConfig(name) then
+					KittyUI:Success("Config loaded", name)
 				else
-					NextUI:Warning("Not found", "That config no longer exists.")
-					NextUI:RefreshConfigs()
+					KittyUI:Warning("Not found", "That config no longer exists.")
+					KittyUI:RefreshConfigs()
 				end
 			end,
 		})
@@ -2732,13 +2732,13 @@ local function Elements(self, getParent)
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				local win = NextUI.Windows[#NextUI.Windows]
+				local win = KittyUI.Windows[#KittyUI.Windows]
 				win:Dialog({
 					Title = "Delete config?",
 					Content = '"' .. name .. '" will be removed from your workspace.',
 					Buttons = {
 						{ Title = "Delete", Primary = true, Callback = function()
-							if NextUI:DeleteConfig(name) then NextUI:Info("Deleted", name) end
+							if KittyUI:DeleteConfig(name) then KittyUI:Info("Deleted", name) end
 						end },
 						{ Title = "Cancel" },
 					},
@@ -2772,7 +2772,7 @@ local function playIntro(gui)
 
 		local hasIcon = loadIcon(icon, INTRO_ICON)
 		if not hasIcon then
-			warn("[NextUI] Intro icon could not be loaded: " .. tostring(INTRO_ICON))
+			warn("[KittyUI] Intro icon could not be loaded: " .. tostring(INTRO_ICON))
 			for _, key in ipairs(IntroFallbackIcons) do
 				local id = IconAssets[key]
 				if type(id) == "string" then
@@ -2848,7 +2848,7 @@ local function playIntro(gui)
 	if left then left:Destroy() end
 end
 
-function NextUI:CreateWindow(o)
+function KittyUI:CreateWindow(o)
 	o = o or {}
 	if o.ToggleKey then self.ToggleKeys = { o.ToggleKey } end
 	if o.ToggleKeys then self.ToggleKeys = o.ToggleKeys end
@@ -2857,7 +2857,7 @@ function NextUI:CreateWindow(o)
 
 	local parent = (gethui and gethui()) or (pcall(function() return CoreGui.Name end) and CoreGui) or Players.LocalPlayer:WaitForChild("PlayerGui")
 	local gui = New("ScreenGui", {
-		Name = "NextUI", ResetOnSpawn = false, DisplayOrder = 2147483647,
+		Name = "KittyUI", ResetOnSpawn = false, DisplayOrder = 2147483647,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling, IgnoreGuiInset = true,
 	})
 	pcall(function() gui.OnTopOfCoreBlur = true end)
@@ -2935,12 +2935,12 @@ function NextUI:CreateWindow(o)
 			Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.78), NumberSequenceKeypoint.new(1, 1) }),
 		}),
 	})
-	local logoText = Text(logoClip, TC(o.Title or o.Name or "NextUI"), {
+	local logoText = Text(logoClip, TC(o.Title or o.Name or "KittyUI"), {
 		Position = UDim2.fromOffset(18, 0), Size = UDim2.new(1, -18, 1, 0), Font = o.LogoFont or T.FontBold,
 		TextSize = 22, TextColor3 = "$Accent",
 	})
 	New("UIStroke", { Color = "$Accent", Transparency = 0.8, Thickness = 1, Parent = logoText })
-	local logoFull = TC(o.Title or o.Name or "NextUI")
+	local logoFull = TC(o.Title or o.Name or "KittyUI")
 	local logoImg = New("ImageLabel", {
 		AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(36, 36),
 		BackgroundTransparency = 1, ScaleType = Enum.ScaleType.Fit, Visible = false, Parent = logoClip,
@@ -3042,7 +3042,7 @@ function NextUI:CreateWindow(o)
 		cbtn.MouseEnter:Connect(function() Tween(cbtn, { BackgroundTransparency = 0 }) Tween(cic, { [prop] = T.Text }) end)
 		cbtn.MouseLeave:Connect(function() Tween(cbtn, { BackgroundTransparency = 1 }) Tween(cic, { [prop] = T.Sub }) end)
 		cbtn.MouseButton1Click:Connect(function() setCollapsed(not collapsed) end)
-		table.insert(NextUI._tips, { label = cbtn, text = "Collapse Sidebar", cut = true })
+		table.insert(KittyUI._tips, { label = cbtn, text = "Collapse Sidebar", cut = true })
 	end
 
 	local content = New("Frame", {
@@ -3257,7 +3257,7 @@ function NextUI:CreateWindow(o)
 		local ov = pickerOverlay
 		if not ov then return end
 		pickerOverlay = nil
-		NextUI._glassPaint = nil
+		KittyUI._glassPaint = nil
 		local pop = ov:FindFirstChild("Popup")
 		local sc = pop and pop:FindFirstChildOfClass("UIScale")
 		if sc then Tween(sc, { Scale = 0.9 }, 0.1) end
@@ -3291,7 +3291,7 @@ function NextUI:CreateWindow(o)
 		for _, name in ipairs(ThemeOrder) do
 			local th = Themes[name]
 			if th then
-				local active = NextUI.ThemeName == name
+				local active = KittyUI.ThemeName == name
 				slot = slot + 1
 				local item = New("TextButton", {
 					BackgroundColor3 = "$Hover", BackgroundTransparency = active and 0.35 or 1,
@@ -3315,7 +3315,7 @@ function NextUI:CreateWindow(o)
 				item.MouseEnter:Connect(function() if not active then Tween(item, { BackgroundTransparency = 0.6 }) end end)
 				item.MouseLeave:Connect(function() if not active then Tween(item, { BackgroundTransparency = 1 }) end end)
 				item.MouseButton1Click:Connect(function()
-					NextUI:SetTheme(name)
+					KittyUI:SetTheme(name)
 					closePicker()
 				end)
 			end
@@ -3335,19 +3335,19 @@ function NextUI:CreateWindow(o)
 			AnchorPoint = Vector2.new(0, 0.5), Position = glassOn and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
 			Size = UDim2.fromOffset(14, 14), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 34, Parent = gTrack,
 		}, { Corner(7) })
-		NextUI._glassPaint = function()
+		KittyUI._glassPaint = function()
 			if not gTrack.Parent then return end
 			Tween(gTrack, { BackgroundColor3 = glassOn and T.Accent or T.Off })
 			Tween(gKnob, { Position = glassOn and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0) })
 		end
-		glassRow.MouseButton1Click:Connect(function() NextUI:SetGlass(not glassOn) end)
+		glassRow.MouseButton1Click:Connect(function() KittyUI:SetGlass(not glassOn) end)
 	end
 
 	if o.ThemePicker ~= false then control("palette", -78, openPicker) end
 	control("minus", -46, function() win:Toggle(false) end)
 	control("x", -14, function()
-		if NextUI:GetQuitSkip() then
-			NextUI:Destroy()
+		if KittyUI:GetQuitSkip() then
+			KittyUI:Destroy()
 			return
 		end
 		win:Dialog({
@@ -3356,8 +3356,8 @@ function NextUI:CreateWindow(o)
 			Check = { Title = "Don't ask again" },
 			Buttons = {
 				{ Title = "Quit", Primary = true, Callback = function(skip)
-					if skip then NextUI:SetQuitSkip(true) end
-					NextUI:Destroy()
+					if skip then KittyUI:SetQuitSkip(true) end
+					KittyUI:Destroy()
 				end },
 				{ Title = "Cancel" },
 			},
@@ -3378,7 +3378,7 @@ function NextUI:CreateWindow(o)
 			Tween(scale, { Scale = 1 }, 0.18)
 			task.delay(0.2, snapMain)
 		else
-			NextUI._toggleDrop(nil)
+			KittyUI._toggleDrop(nil)
 			closePicker()
 			Tween(scale, { Scale = 0.94 }, 0.12)
 			task.delay(0.12, function() if not win.Visible then main.Visible = false end end)
@@ -3569,9 +3569,9 @@ function NextUI:CreateWindow(o)
 			results.Visible = q ~= ""
 			content:SetAttribute("Covered", results.Visible)
 			if q == "" then return end
-			NextUI._toggleDrop(nil)
+			KittyUI._toggleDrop(nil)
 			local n = 0
-			for _, e in ipairs(NextUI._index) do
+			for _, e in ipairs(KittyUI._index) do
 				if e.ctx.win == win and e.frame.Parent then
 					local hay = (e.title .. " " .. tostring(e.desc or "")):lower()
 					if hay:find(q, 1, true) then
@@ -3651,7 +3651,7 @@ function NextUI:CreateWindow(o)
 				end
 				return
 			end
-			if i.KeyCode == Enum.KeyCode.Slash and not gp and not UIS:GetFocusedTextBox() and not NextUI._listening then
+			if i.KeyCode == Enum.KeyCode.Slash and not gp and not UIS:GetFocusedTextBox() and not KittyUI._listening then
 				swallowUntil = os.clock() + 0.25
 				searchBox:CaptureFocus()
 			end
@@ -3676,7 +3676,7 @@ function NextUI:CreateWindow(o)
 			headerTitle.Text = richEsc(TC(crumbTab))
 		end
 	end
-	NextUI:_AddPaint(renderCrumb, headerTitle)
+	KittyUI:_AddPaint(renderCrumb, headerTitle)
 	local function setCrumb(tabName, secName)
 		crumbTab, crumbSec = tabName, secName
 		renderCrumb()
@@ -3701,7 +3701,7 @@ function NextUI:CreateWindow(o)
 	function win:SetSidebar(v) setCollapsed(v) end
 	function win:ToggleSidebar() setCollapsed(not collapsed) end
 
-	function win:AddWindow(a) return NextUI:AddWindow(a) end
+	function win:AddWindow(a) return KittyUI:AddWindow(a) end
 	function win:IsSidebarCollapsed() return collapsed end
 
 	function win:AddCategory(name)
@@ -3754,7 +3754,7 @@ function NextUI:CreateWindow(o)
 
 		local expandedPos, expandedSize = label.Position, label.Size
 		local tipEntry = { label = btn, text = TC(name), cut = false }
-		table.insert(NextUI._tips, tipEntry)
+		table.insert(KittyUI._tips, tipEntry)
 		local plainText = label.Text
 		local firstChar = (TC(name):match("^" .. utf8.charpattern) or "?"):upper()
 		local function applyCollapse(c)
@@ -3823,10 +3823,10 @@ function NextUI:CreateWindow(o)
 		end
 		tab._set = function(v) selected = v page.Visible = v paint() end
 		btn.MouseButton1Click:Connect(function()
-			NextUI._toggleDrop(nil)
+			KittyUI._toggleDrop(nil)
 			tab:Select()
 		end)
-		NextUI:_AddPaint(paint, btn)
+		KittyUI:_AddPaint(paint, btn)
 
 		local counter = 0
 		local function createCard(co)
@@ -3878,7 +3878,7 @@ function NextUI:CreateWindow(o)
 					})
 					hit.MouseEnter:Connect(function() Tween(arrow, { ImageColor3 = T.Text }) end)
 					hit.MouseLeave:Connect(function() Tween(arrow, { ImageColor3 = T.Sub }) end)
-					hit.MouseButton1Click:Connect(function() setCollapsed(not NextUI.Flags[collapseKey]) end)
+					hit.MouseButton1Click:Connect(function() setCollapsed(not KittyUI.Flags[collapseKey]) end)
 				end
 			end
 			local collapsed = false
@@ -3901,7 +3901,7 @@ function NextUI:CreateWindow(o)
 					v = v and true or false
 					local changed = v ~= collapsed
 					collapsed = v
-					NextUI.Flags[collapseKey] = v
+					KittyUI.Flags[collapseKey] = v
 					local h = v and 0 or body.AbsoluteSize.Y
 					local rot = v and -90 or 0
 					if instant then
@@ -3926,7 +3926,7 @@ function NextUI:CreateWindow(o)
 				function sec:Expand() setCollapsed(false) end
 				function sec:ToggleCollapsed() setCollapsed(not collapsed) end
 				function sec:IsCollapsed() return collapsed end
-				NextUI.Options[collapseKey] = {
+				KittyUI.Options[collapseKey] = {
 					Set = function(_, v) setCollapsed(v) end,
 					Get = function() return collapsed end,
 				}
@@ -3951,7 +3951,7 @@ function NextUI:CreateWindow(o)
 				function sec:Set(v, silent)
 					state = v and true or false
 					paint2()
-					if co.Flag then NextUI.Flags[co.Flag] = state end
+					if co.Flag then KittyUI.Flags[co.Flag] = state end
 					if not silent then safe(co.Callback, state) end
 				end
 				function sec:Get() return state end
@@ -3959,10 +3959,10 @@ function NextUI:CreateWindow(o)
 					AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, 0, 0.5, 0), Size = UDim2.fromOffset(collapsible and 58 or 70, 46),
 					BackgroundTransparency = 1, Text = "", ZIndex = 3, Parent = header2,
 				}).MouseButton1Click:Connect(function() sec:Set(not state) end)
-				NextUI:_AddPaint(paint2, header2)
+				KittyUI:_AddPaint(paint2, header2)
 				if co.Flag then
-					NextUI.Flags[co.Flag] = false
-					NextUI.Options[co.Flag] = sec
+					KittyUI.Flags[co.Flag] = false
+					KittyUI.Options[co.Flag] = sec
 				end
 				sec:Set(co.Default or false, true)
 			end
@@ -3987,8 +3987,8 @@ function NextUI:CreateWindow(o)
 	end
 
 	connect(UIS.InputBegan, function(i)
-		if NextUI._listening or UIS:GetFocusedTextBox() then return end
-		for _, k in ipairs(NextUI.ToggleKeys) do
+		if KittyUI._listening or UIS:GetFocusedTextBox() then return end
+		for _, k in ipairs(KittyUI.ToggleKeys) do
 			if i.KeyCode == k then
 				win:Toggle()
 				return
@@ -4073,16 +4073,16 @@ local function panelParent()
 end
 
 local function panelGui()
-	local g = NextUI.PanelGui
+	local g = KittyUI.PanelGui
 	if g and g.Parent then return g end
 	g = New("ScreenGui", {
-		Name = "NextUIWindows", ResetOnSpawn = false, DisplayOrder = 2147483646,
+		Name = "KittyUIWindows", ResetOnSpawn = false, DisplayOrder = 2147483646,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling, IgnoreGuiInset = true,
 	})
 	pcall(function() g.OnTopOfCoreBlur = true end)
 	if syn and syn.protect_gui then pcall(syn.protect_gui, g) end
 	g.Parent = panelParent()
-	NextUI.PanelGui = g
+	KittyUI.PanelGui = g
 	return g
 end
 
@@ -4097,7 +4097,7 @@ end
 
 local liveFps = 60
 local function startLive()
-	local c = NextUI._liveConn
+	local c = KittyUI._liveConn
 	if c and c.Connected then return end
 	local acc, frames = 0, 0
 	c = RunService.Heartbeat:Connect(function(dt)
@@ -4108,8 +4108,8 @@ local function startLive()
 			acc, frames = 0, 0
 		end
 	end)
-	NextUI._liveConn = c
-	table.insert(NextUI._conns, c)
+	KittyUI._liveConn = c
+	table.insert(KittyUI._conns, c)
 end
 
 local function liveValue(n)
@@ -4206,7 +4206,7 @@ local function applyMarkup(str, pass)
 	return str
 end
 
-function NextUI:AddWindow(o)
+function KittyUI:AddWindow(o)
 	if type(o) ~= "table" then o = { Title = o } end
 	local gui = panelGui()
 	self._panels = self._panels or {}
@@ -4512,13 +4512,13 @@ function NextUI:AddWindow(o)
 	local function on(signal, fn)
 		local c = signal:Connect(fn)
 		table.insert(own, c)
-		table.insert(NextUI._conns, c)
+		table.insert(KittyUI._conns, c)
 		return c
 	end
 
 	local function raise()
-		NextUI._panelZ = (NextUI._panelZ or 0) + 1
-		main.ZIndex = NextUI._panelZ
+		KittyUI._panelZ = (KittyUI._panelZ or 0) + 1
+		main.ZIndex = KittyUI._panelZ
 	end
 
 	local function clamp()
@@ -4638,8 +4638,8 @@ function NextUI:AddWindow(o)
 		if self._dead then return end
 		self._dead = true
 		for _, c in ipairs(own) do pcall(function() c:Disconnect() end) end
-		for i, p in ipairs(NextUI._panels) do
-			if p == self then table.remove(NextUI._panels, i) break end
+		for i, p in ipairs(KittyUI._panels) do
+			if p == self then table.remove(KittyUI._panels, i) break end
 		end
 		main:Destroy()
 	end
@@ -4658,7 +4658,7 @@ function NextUI:AddWindow(o)
 		end)
 	end
 
-	NextUI:_AddPaint(refresh, main)
+	KittyUI:_AddPaint(refresh, main)
 	task.spawn(function()
 		while not panel._dead and main:IsDescendantOf(game) do
 			task.wait(0.25)
@@ -4672,16 +4672,16 @@ function NextUI:AddWindow(o)
 end
 
 local function watermarkGui()
-	local g = NextUI.WatermarkGui
+	local g = KittyUI.WatermarkGui
 	if g and g.Parent then return g end
 	g = New("ScreenGui", {
-		Name = "NextUIWatermark", ResetOnSpawn = false, DisplayOrder = 2147483640,
+		Name = "KittyUIWatermark", ResetOnSpawn = false, DisplayOrder = 2147483640,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling, IgnoreGuiInset = true,
 	})
 	pcall(function() g.OnTopOfCoreBlur = true end)
 	if syn and syn.protect_gui then pcall(syn.protect_gui, g) end
 	g.Parent = panelParent()
-	NextUI.WatermarkGui = g
+	KittyUI.WatermarkGui = g
 	return g
 end
 
@@ -4693,7 +4693,7 @@ local function placeWatermark(frame, corner, margin)
 	frame.Position = UDim2.new(right and 1 or 0, right and -margin or margin, bottom and 1 or 0, bottom and -margin or margin)
 end
 
-function NextUI:CreateWatermark(o)
+function KittyUI:CreateWatermark(o)
 	if type(o) ~= "table" then o = { Title = o } end
 	if self.Watermark and not self.Watermark._dead then self.Watermark:Destroy() end
 
@@ -4740,7 +4740,7 @@ function NextUI:CreateWatermark(o)
 	end
 	setIcon(o.Icon)
 
-	local titleLabel = Text(root, TC(o.Title or "NextUI"), {
+	local titleLabel = Text(root, TC(o.Title or "KittyUI"), {
 		AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Font = T.FontBold, TextSize = 13, LayoutOrder = 1,
 		Visible = o.Title ~= false,
 	})
@@ -4821,7 +4821,7 @@ function NextUI:CreateWatermark(o)
 	function wm:AddPlayer() return self:Add(nil, function() return Players.LocalPlayer and Players.LocalPlayer.DisplayName or "" end) end
 	function wm:AddFlag(name, flag)
 		return self:Add(name, function()
-			local v = NextUI.Flags[flag]
+			local v = KittyUI.Flags[flag]
 			if type(v) == "boolean" then return v and "On" or "Off" end
 			return v
 		end)
@@ -4843,7 +4843,7 @@ function NextUI:CreateWatermark(o)
 		wm._dead = true
 		pcall(function() fpsConn:Disconnect() end)
 		root:Destroy()
-		if NextUI.Watermark == wm then NextUI.Watermark = nil end
+		if KittyUI.Watermark == wm then KittyUI.Watermark = nil end
 	end
 
 	local builtin = { FPS = wm.AddFPS, Ping = wm.AddPing, Time = wm.AddTime, Player = wm.AddPlayer }
@@ -4880,7 +4880,7 @@ local function decode(v)
 	return v
 end
 
-function NextUI:SaveConfig(name)
+function KittyUI:SaveConfig(name)
 	if not writefile then return false end
 	local data = {}
 	for k, v in pairs(self.Flags) do
@@ -4894,9 +4894,9 @@ function NextUI:SaveConfig(name)
 	return ok
 end
 
-function NextUI:UpdateConfig(name) return self:SaveConfig(name) end
+function KittyUI:UpdateConfig(name) return self:SaveConfig(name) end
 
-function NextUI:RefreshConfigs(select)
+function KittyUI:RefreshConfigs(select)
 	local names = self:ListConfigs()
 	for _, dd in ipairs(self._configLists) do
 		pcall(function()
@@ -4909,7 +4909,7 @@ function NextUI:RefreshConfigs(select)
 	end
 end
 
-function NextUI:UniqueConfigName(base)
+function KittyUI:UniqueConfigName(base)
 	local existing = {}
 	for _, n in ipairs(self:ListConfigs()) do existing[n:lower()] = true end
 	if not existing[base:lower()] then return base end
@@ -4918,7 +4918,7 @@ function NextUI:UniqueConfigName(base)
 	return base .. " (" .. i .. ")"
 end
 
-function NextUI:CreateConfig(name)
+function KittyUI:CreateConfig(name)
 	name = tostring(name or ""):match("^%s*(.-)%s*$")
 	name = name:gsub("[^%w _%-]", "")
 	if name == "" then name = "Config" end
@@ -4927,7 +4927,7 @@ function NextUI:CreateConfig(name)
 	return nil
 end
 
-function NextUI:ListConfigs()
+function KittyUI:ListConfigs()
 	local names = {}
 	if not (listfiles and isfolder) then return names end
 	pcall(function()
@@ -4942,7 +4942,7 @@ function NextUI:ListConfigs()
 	return names
 end
 
-function NextUI:DeleteConfig(name)
+function KittyUI:DeleteConfig(name)
 	if not (delfile and isfile) then return false end
 	local path = self.ConfigFolder .. "/" .. name .. ".json"
 	if not isfile(path) then return false end
@@ -4951,7 +4951,7 @@ function NextUI:DeleteConfig(name)
 	return ok
 end
 
-function NextUI:LoadConfig(name)
+function KittyUI:LoadConfig(name)
 	if not (readfile and isfile) then return false end
 	local path = self.ConfigFolder .. "/" .. name .. ".json"
 	if not isfile(path) then return false end
@@ -4964,7 +4964,7 @@ function NextUI:LoadConfig(name)
 	return true
 end
 
-function NextUI:GetQuitSkip()
+function KittyUI:GetQuitSkip()
 	if not (readfile and isfile) then return false end
 	local path = self.ConfigFolder .. "/quit-confirm.json"
 	local ok, res = pcall(function()
@@ -4974,7 +4974,7 @@ function NextUI:GetQuitSkip()
 	return ok and res == true
 end
 
-function NextUI:SetQuitSkip(v)
+function KittyUI:SetQuitSkip(v)
 	if not writefile then return false end
 	pcall(function()
 		if makefolder and isfolder and not isfolder(self.ConfigFolder) then makefolder(self.ConfigFolder) end
@@ -4982,7 +4982,7 @@ function NextUI:SetQuitSkip(v)
 	return (pcall(writefile, self.ConfigFolder .. "/quit-confirm.json", v and "true" or "false"))
 end
 
-function NextUI:Destroy()
+function KittyUI:Destroy()
 	for _, c in ipairs(self._conns) do pcall(function() c:Disconnect() end) end
 	self._glass, self._glassLayers, self.Windows = {}, {}, {}
 	updateBlur()
@@ -4996,12 +4996,12 @@ function NextUI:Destroy()
 	self.WatermarkGui, self.Watermark = nil, nil
 	self.PanelGui, self._panels, self._panelZ = nil, {}, 0
 	if Notify then pcall(function() Notify:Destroy() end) end
-	genv.NextUI = nil
+	genv.KittyUI = nil
 end
 
-genv.NextUI = NextUI
+genv.KittyUI = KittyUI
 
-print("NextUI Loaded - Library v" .. NextUI.Version)
-print("NextUI by Next Development ~ rscripts.net/@1337")
+print("KittyUI Loaded - Library v" .. KittyUI.Version)
+print("KittyUI by Next Development ~ rscripts.net/@1337")
 
-return NextUI
+return KittyUI
