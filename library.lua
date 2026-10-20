@@ -41,8 +41,8 @@ end
 local function C(r, g, b) return Color3.fromRGB(r, g, b) end
 
 local INTRO_ICON = 97462895432960
-local INTRO_TITLE = '<font color="#b870ff"><b>kitty</b></font>hook'
-local INTRO_SUBTITLE = 'by <font color="#ffa470ff"><b>jordan</b></font>'
+local INTRO_TITLE = "kittyhook" -- '<font color="#b870ff"><b>kitty</b></font>hook'
+local INTRO_SUBTITLE = "made by jordan" -- 'by <font color="#ffa470"><b>jordan</b></font>'
 
 local Themes = {
 	Crimson = { Window = C(19, 19, 19), Side = C(14, 14, 14), Panel = C(17, 17, 17), Card = C(13, 13, 13), Element = C(27, 27, 27), Hover = C(38, 38, 38), Border = C(7, 7, 7), Accent = C(255, 24, 24), Text = C(240, 240, 240), Sub = C(112, 112, 112), Off = C(34, 34, 34) },
@@ -79,7 +79,7 @@ local KittyUI = {
 	_conns = {}, _glass = {}, _glassLayers = {}, _binds = {}, _paints = {}, _drops = {}, _configLists = {}, _tips = {}, _index = {}, _scrollers = {},
 	TipLength = 16,
 	ButtonTipLength = 22,
-	TitleCase = true,
+	TitleCase = false,
 	TextScale = 1.15,
 	ThemeSweep = true,
 	BlurMode = "Parts",
@@ -560,7 +560,6 @@ local function Text(parent, text, props)
 		BackgroundTransparency = 1, Text = text, Font = T.Font, TextSize = 13,
 		TextColor3 = "$Text", TextXAlignment = Enum.TextXAlignment.Left, Parent = parent,
 	}
-	props.RichText = true,
 	for k, v in pairs(props or {}) do p[k] = v end
 	return New("TextLabel", p)
 end
@@ -738,7 +737,6 @@ local function setupTooltip(gui)
 		Size = UDim2.fromOffset(0, 0), BackgroundColor3 = "$Element", GlassKey = "Popup", BorderSizePixel = 0, Parent = gui,
 	}, { Corner(5), Stroke("Border", 0.1), Pad(8, 4, 8, 4) })
 	local txt = Text(tip, "", {
-		RichText = true,
 		ZIndex = 1001, AutomaticSize = Enum.AutomaticSize.XY, Size = UDim2.fromOffset(0, 0),
 		TextSize = 12, TextWrapped = false,
 	})
@@ -1487,7 +1485,6 @@ local function Elements(self, getParent)
 		local d = h > 40
 		local badge, bw = Badge(f, o.Badge)
 		local label = Text(f, TC(o.Title or o.Name or ""), {
-			RichText = true,
 			Position = UDim2.fromOffset(0, d and 6 or 0), Size = UDim2.new(1, -(rpad + (bw and (bw + 6) or 0)), 0, d and 28 or 40),
 			TextColor3 = static and T.Sub or "$Sub", TextTruncate = Enum.TextTruncate.AtEnd,
 		})
@@ -2684,67 +2681,67 @@ local function Elements(self, getParent)
 	function self:AddConfigManager(o)
 		o = o or {}
 		local list = self:AddDropdown({
-			Title = o.Title or "Config", Description = o.Description or "Saved configs in your workspace",
+			Title = o.Title or "config", Description = o.Description or "saved configs in your workspace",
 			Flag = o.Flag or "_config_select", Values = KittyUI:ListConfigs(),
 		})
 		table.insert(KittyUI._configLists, list)
 		local nameBox = self:AddTextbox({
-			Title = "New config name", Description = "Existing names get (1), (2) and so on",
+			Title = "new config name", Description = "existing names get (1), (2) and so on",
 			Flag = (o.Flag and (o.Flag .. "_name")) or "_config_name", Placeholder = "my config",
 		})
 		local function selected()
 			local name = list:Get()
-			if not name then KittyUI:Warning("No config", "Select a config first.") end
+			if not name then KittyUI:Warning("no config", "Select a config first.") end
 			return name
 		end
 
 		self:AddButton({
-			Title = "Save config", Description = "Creates a new config from the name above",
+			Title = "save config", Description = "creates a new config from the name above",
 			Callback = function()
 				local name = KittyUI:CreateConfig(nameBox:Get())
 				if name then
 					nameBox:Set("")
-					KittyUI:Success("Config saved", name)
+					KittyUI:Success("config saved", name)
 				else
-					KittyUI:Error("Could not save", "Your executor has no file access.")
+					KittyUI:Error("could not save", "your executor has no file access.")
 				end
 			end,
 		})
 		self:AddButton({
-			Title = "Update config", Description = "Overwrites the selected config with your current settings",
+			Title = "update config", Description = "overwrites the selected config with your current settings",
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if KittyUI:UpdateConfig(name) then KittyUI:Success("Config updated", name) else KittyUI:Error("Could not update", "Your executor has no file access.") end
+				if KittyUI:UpdateConfig(name) then KittyUI:Success("config updated", name) else KittyUI:Error("could not update", "your executor has no file access.") end
 			end,
 		})
 		self:AddButton({
-			Title = "Load config",
+			Title = "load config",
 			Callback = function()
 				local name = selected()
 				if not name then return end
 				if KittyUI:LoadConfig(name) then
-					KittyUI:Success("Config loaded", name)
+					KittyUI:Success("config loaded", name)
 				else
-					KittyUI:Warning("Not found", "That config no longer exists.")
+					KittyUI:Warning("not found", "That config no longer exists.")
 					KittyUI:RefreshConfigs()
 				end
 			end,
 		})
 		self:AddButton({
-			Title = "Delete config",
+			Title = "delete config",
 			Callback = function()
 				local name = selected()
 				if not name then return end
 				local win = KittyUI.Windows[#KittyUI.Windows]
 				win:Dialog({
-					Title = "Delete config?",
+					Title = "delete config?",
 					Content = '"' .. name .. '" will be removed from your workspace.',
 					Buttons = {
-						{ Title = "Delete", Primary = true, Callback = function()
-							if KittyUI:DeleteConfig(name) then KittyUI:Info("Deleted", name) end
+						{ Title = "delete", Primary = true, Callback = function()
+							if KittyUI:DeleteConfig(name) then KittyUI:Info("deleted", name) end
 						end },
-						{ Title = "Cancel" },
+						{ Title = "cancel" },
 					},
 				})
 			end,
@@ -2812,7 +2809,6 @@ local function playIntro(gui)
 			ClipsDescendants = true, ZIndex = 2, Parent = stage,
 		})
 		local titleLabel = Text(titleClip, titleText, {
-			RichText = true,
 			Position = UDim2.fromOffset(-fullW, 0), Size = UDim2.fromOffset(fullW, 34), Font = T.FontBlack,
 			TextSize = 30, RawSize = true, TextColor3 = T.Text, TextXAlignment = Enum.TextXAlignment.Left,
 		})
@@ -2821,7 +2817,6 @@ local function playIntro(gui)
 			ClipsDescendants = true, ZIndex = 2, Parent = stage,
 		})
 		local subLabel = Text(subClip, subText, {
-			RichText = true,
 			Position = UDim2.fromOffset(0, -18), Size = UDim2.fromOffset(fullW, 18), TextSize = 14, RawSize = true, TextColor3 = T.Accent,
 			TextXAlignment = Enum.TextXAlignment.Center, TextTransparency = 1,
 		})
@@ -2943,7 +2938,7 @@ function KittyUI:CreateWindow(o)
 	})
 	local logoText = Text(logoClip, TC(o.Title or o.Name or "KittyUI"), {
 		Position = UDim2.fromOffset(18, 0), Size = UDim2.new(1, -18, 1, 0), Font = o.LogoFont or T.FontBold,
-		TextSize = 22, TextColor3 = "$Accent",
+		TextSize = 22, TextColor3 = Color3.fromRGB(255, 255, 255),
 	})
 	New("UIStroke", { Color = "$Accent", Transparency = 0.8, Thickness = 1, Parent = logoText })
 	local logoFull = TC(o.Title or o.Name or "KittyUI")
@@ -3357,15 +3352,15 @@ function KittyUI:CreateWindow(o)
 			return
 		end
 		win:Dialog({
-			Title = "Quit?",
-			Content = "Do you really want to close the UI?",
-			Check = { Title = "Don't ask again" },
+			Title = "quit?",
+			Content = "do you really want to close the UI?",
+			Check = { Title = "don't ask again" },
 			Buttons = {
-				{ Title = "Quit", Primary = true, Callback = function(skip)
+				{ Title = "quit", Primary = true, Callback = function(skip)
 					if skip then KittyUI:SetQuitSkip(true) end
 					KittyUI:Destroy()
 				end },
-				{ Title = "Cancel" },
+				{ Title = "cancel" },
 			},
 		})
 	end)
@@ -5006,10 +5001,5 @@ function KittyUI:Destroy()
 	if Notify then pcall(function() Notify:Destroy() end) end
 	genv.KittyUI = nil
 end
-
-genv.KittyUI = KittyUI
-
-print("KittyUI Loaded - Library v" .. KittyUI.Version)
-print("KittyUI by KittyUI ~ rscripts.net/@1337")
 
 return KittyUI
