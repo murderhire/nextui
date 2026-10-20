@@ -795,10 +795,10 @@ local function flashError(frame, rest)
 end
 
 local function keyName(k)
-	if not k then return "None" end
+	if not k then return "none" end
 	if k.EnumType == Enum.UserInputType then
 		local n = k.Name:match("MouseButton(%d)")
-		return n and ("Mouse " .. n) or k.Name
+		return n and ("mouse " .. n) or k.Name
 	end
 	return k.Name
 end
@@ -1870,9 +1870,9 @@ local function Elements(self, getParent)
 			end
 			if multi then
 				local r = result()
-				shown.Text = #r > 0 and table.concat(r, ", ") or "None"
+				shown.Text = #r > 0 and table.concat(r, ", ") or "none"
 			else
-				shown.Text = cur and tostring(cur) or "None"
+				shown.Text = cur and tostring(cur) or "none"
 			end
 		end
 		local function fire(silent)
