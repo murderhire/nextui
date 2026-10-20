@@ -1484,6 +1484,7 @@ local function Elements(self, getParent)
 		local d = h > 40
 		local badge, bw = Badge(f, o.Badge)
 		local label = Text(f, TC(o.Title or o.Name or ""), {
+			RichText = true,
 			Position = UDim2.fromOffset(0, d and 6 or 0), Size = UDim2.new(1, -(rpad + (bw and (bw + 6) or 0)), 0, d and 28 or 40),
 			TextColor3 = static and T.Sub or "$Sub", TextTruncate = Enum.TextTruncate.AtEnd,
 		})
