@@ -4906,6 +4906,7 @@ function KittyUI:RefreshConfigurations(select)
 			local keep = select or dd:Get()
 			dd:Refresh(names)
 			for _, n in ipairs(names) do
+				if n == "whitelist" then continue end
 				if n == keep then dd:Set(n, true) break end
 			end
 		end)
