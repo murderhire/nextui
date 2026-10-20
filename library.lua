@@ -1,5 +1,5 @@
 --[[
-	KittyUI v1.3.3 ~ by Len
+	KittyUI v1.3.3 ~ by Jordan
 
 	MIT License
 
@@ -4745,6 +4745,7 @@ function KittyUI:CreateWatermark(o)
 	setIcon(o.Icon)
 
 	local titleLabel = Text(root, TC(o.Title or "KittyUI"), {
+		RichText = true,
 		AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Font = T.FontBold, TextSize = 13, LayoutOrder = 1,
 		Visible = o.Title ~= false,
 	})
