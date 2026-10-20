@@ -4970,7 +4970,7 @@ end
 
 function KittyUI:GetQuitSkip()
 	if not (readfile and isfile) then return false end
-	local path = self.ConfigurationFolder .. "/quit-confirm.json"
+	local path = self.ConfigurationFolder .. "/data/quit-confirm.json"
 	local ok, res = pcall(function()
 		if not isfile(path) then return false end
 		return tostring(readfile(path)):match("^%s*(.-)%s*$") == "true"
@@ -4983,7 +4983,7 @@ function KittyUI:SetQuitSkip(v)
 	pcall(function()
 		if makefolder and isfolder and not isfolder(self.ConfigurationFolder) then makefolder(self.ConfigurationFolder) end
 	end)
-	return (pcall(writefile, self.ConfigurationFolder .. "/quit-confirm.json", v and "true" or "false"))
+	return (pcall(writefile, self.ConfigurationFolder .. "/data/quit-confirm.json", v and "true" or "false"))
 end
 
 function KittyUI:Destroy()
