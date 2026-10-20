@@ -3106,7 +3106,7 @@ function KittyUI:CreateWindow(o)
 				if p >= 1 then
 					st.active = false
 					st.frame.Visible = false
-					st.wait = 4 + math.random() * 7
+					st.wait = 4 + math.random() * 2
 				else
 					st.frame.Position = UDim2.fromOffset(st.x + st.dx * st.dist, st.y + st.dy * st.dist)
 					st.frame.BackgroundTransparency = 1 - math.min(1, p * 8, (1 - p) * 5) * 0.9
