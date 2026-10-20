@@ -556,6 +556,7 @@ end
 
 local function Text(parent, text, props)
 	local p = {
+		RichText = true,
 		BackgroundTransparency = 1, Text = text, Font = T.Font, TextSize = 13,
 		TextColor3 = "$Text", TextXAlignment = Enum.TextXAlignment.Left, Parent = parent,
 	}
