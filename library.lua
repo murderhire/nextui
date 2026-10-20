@@ -41,8 +41,8 @@ end
 local function C(r, g, b) return Color3.fromRGB(r, g, b) end
 
 local INTRO_ICON = 97462895432960
-local INTRO_TITLE = "Next Development"
-local INTRO_SUBTITLE = "UI by diser.me/KittyUI/"
+local INTRO_TITLE = '<font color="#b870ff"><b>kitty</b></font>hook'
+local INTRO_SUBTITLE = 'by <font color="#ffa470ff"><b>jordan</b></font>'
 
 local Themes = {
 	Crimson = { Window = C(19, 19, 19), Side = C(14, 14, 14), Panel = C(17, 17, 17), Card = C(13, 13, 13), Element = C(27, 27, 27), Hover = C(38, 38, 38), Border = C(7, 7, 7), Accent = C(255, 24, 24), Text = C(240, 240, 240), Sub = C(112, 112, 112), Off = C(34, 34, 34) },
@@ -474,11 +474,11 @@ local function resolveIcon(name)
 		if next(IconAssets) == nil then
 			if not warnedIcons[""] then
 				warnedIcons[""] = true
-				print("[Next Development] ERROR: The icon list could not be loaded, icons will not show.")
+				print("[KittyUI] ERROR: The icon list could not be loaded, icons will not show.")
 			end
 		elseif not warnedIcons[name] then
 			warnedIcons[name] = true
-			print("[Next Development] ERROR: Unknown icon \"" .. name .. "\"")
+			print("[KittyUI] ERROR: Unknown icon \"" .. name .. "\"")
 		end
 	end
 	return found
@@ -2808,6 +2808,7 @@ local function playIntro(gui)
 			ClipsDescendants = true, ZIndex = 2, Parent = stage,
 		})
 		local titleLabel = Text(titleClip, titleText, {
+			RichText = true,
 			Position = UDim2.fromOffset(-fullW, 0), Size = UDim2.fromOffset(fullW, 34), Font = T.FontBlack,
 			TextSize = 30, RawSize = true, TextColor3 = T.Text, TextXAlignment = Enum.TextXAlignment.Left,
 		})
@@ -2816,6 +2817,7 @@ local function playIntro(gui)
 			ClipsDescendants = true, ZIndex = 2, Parent = stage,
 		})
 		local subLabel = Text(subClip, subText, {
+			RichText = true,
 			Position = UDim2.fromOffset(0, -18), Size = UDim2.fromOffset(fullW, 18), TextSize = 14, RawSize = true, TextColor3 = T.Accent,
 			TextXAlignment = Enum.TextXAlignment.Center, TextTransparency = 1,
 		})
@@ -5002,6 +5004,6 @@ end
 genv.KittyUI = KittyUI
 
 print("KittyUI Loaded - Library v" .. KittyUI.Version)
-print("KittyUI by Next Development ~ rscripts.net/@1337")
+print("KittyUI by KittyUI ~ rscripts.net/@1337")
 
 return KittyUI
