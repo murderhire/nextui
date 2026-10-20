@@ -40,7 +40,7 @@ end
 
 local function C(r, g, b) return Color3.fromRGB(r, g, b) end
 
-local INTRO_ICON = "https://diser.me/KittyUI/next.png"
+local INTRO_ICON = 97462895432960
 local INTRO_TITLE = "Next Development"
 local INTRO_SUBTITLE = "UI by diser.me/KittyUI/"
 
