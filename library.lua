@@ -1993,7 +1993,7 @@ local function Elements(self, getParent)
 				end)
 				b.MouseButton1Click:Connect(function() choose(v) end)
 			end
-			local empty = Text(list, #values == 0 and "No items" or "No matches", {
+			local empty = Text(list, #values == 0 and "no items" or "no matches", {
 				Size = UDim2.new(1, 0, 0, 26), TextColor3 = "$Sub", TextSize = 12, LayoutOrder = 99999, Visible = #values == 0,
 			})
 			Pad(10, 0, 0, 0).Parent = empty
