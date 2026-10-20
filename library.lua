@@ -2681,61 +2681,61 @@ local function Elements(self, getParent)
 	function self:AddConfigurationManager(o)
 		o = o or {}
 		local list = self:AddDropdown({
-			Title = o.Title or "config", Description = o.Description or "saved configs in your workspace",
+			Title = o.Title or "configuration", Description = o.Description or "saved configs in your workspace",
 			Flag = o.Flag or "_config_select", Values = KittyUI:ListConfigurations(),
 		})
 		table.insert(KittyUI._configLists, list)
 		local nameBox = self:AddTextbox({
-			Title = "new config name", Description = "existing names get (1), (2) and so on",
-			Flag = (o.Flag and (o.Flag .. "_name")) or "_config_name", Placeholder = "my config",
+			Title = "new configuration name", Description = "existing names get (1), (2) and so on",
+			Flag = (o.Flag and (o.Flag .. "_name")) or "_config_name", Placeholder = "my configuration",
 		})
 		local function selected()
 			local name = list:Get()
-			if not name then KittyUI:Warning("no config", "Select a config first.") end
+			if not name then KittyUI:Warning("no configuration", "select a configuration first.") end
 			return name
 		end
 
 		self:AddButton({
-			Title = "save config", Description = "creates a new config from the name above",
+			Title = "save configuration", Description = "creates a new configuration from the name above",
 			Callback = function()
 				local name = KittyUI:CreateConfiguration(nameBox:Get())
 				if name then
 					nameBox:Set("")
-					KittyUI:Success("config saved", name)
+					KittyUI:Success("configuration saved", name)
 				else
 					KittyUI:Error("could not save", "your executor has no file access.")
 				end
 			end,
 		})
 		self:AddButton({
-			Title = "update config", Description = "overwrites the selected config with your current settings",
+			Title = "update configuration", Description = "overwrites the selected configuration with your current settings",
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if KittyUI:UpdateConfiguration(name) then KittyUI:Success("config updated", name) else KittyUI:Error("could not update", "your executor has no file access.") end
+				if KittyUI:UpdateConfiguration(name) then KittyUI:Success("configuration updated", name) else KittyUI:Error("could not update", "your executor has no file access.") end
 			end,
 		})
 		self:AddButton({
-			Title = "load config",
+			Title = "load configuration",
 			Callback = function()
 				local name = selected()
 				if not name then return end
 				if KittyUI:LoadConfiguration(name) then
-					KittyUI:Success("config loaded", name)
+					KittyUI:Success("configuration loaded", name)
 				else
-					KittyUI:Warning("not found", "That config no longer exists.")
+					KittyUI:Warning("not found", "That configuration no longer exists.")
 					KittyUI:RefreshConfigurations()
 				end
 			end,
 		})
 		self:AddButton({
-			Title = "delete config",
+			Title = "delete configuration",
 			Callback = function()
 				local name = selected()
 				if not name then return end
 				local win = KittyUI.Windows[#KittyUI.Windows]
 				win:Dialog({
-					Title = "delete config?",
+					Title = "delete configuration?",
 					Content = '"' .. name .. '" will be removed from your workspace.',
 					Buttons = {
 						{ Title = "delete", Primary = true, Callback = function()
