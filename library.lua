@@ -74,7 +74,7 @@ local KittyUI = {
 	ThemeName = "Rose",
 	ThemeOrder = table.clone(ThemeOrder),
 	ToggleKeys = { Enum.KeyCode.Insert, Enum.KeyCode.RightShift },
-	ConfigFolder = "kittyhook",
+	ConfigurationFolder = "kittyhook",
 	Windows = {},
 	_conns = {}, _glass = {}, _glassLayers = {}, _binds = {}, _paints = {}, _drops = {}, _configLists = {}, _tips = {}, _index = {}, _scrollers = {},
 	TipLength = 16,
@@ -2678,11 +2678,11 @@ local function Elements(self, getParent)
 		return tabs
 	end
 
-	function self:AddConfigManager(o)
+	function self:AddConfigurationManager(o)
 		o = o or {}
 		local list = self:AddDropdown({
 			Title = o.Title or "config", Description = o.Description or "saved configs in your workspace",
-			Flag = o.Flag or "_config_select", Values = KittyUI:ListConfigs(),
+			Flag = o.Flag or "_config_select", Values = KittyUI:ListConfigurations(),
 		})
 		table.insert(KittyUI._configLists, list)
 		local nameBox = self:AddTextbox({
@@ -2698,7 +2698,7 @@ local function Elements(self, getParent)
 		self:AddButton({
 			Title = "save config", Description = "creates a new config from the name above",
 			Callback = function()
-				local name = KittyUI:CreateConfig(nameBox:Get())
+				local name = KittyUI:CreateConfiguration(nameBox:Get())
 				if name then
 					nameBox:Set("")
 					KittyUI:Success("config saved", name)
@@ -2712,7 +2712,7 @@ local function Elements(self, getParent)
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if KittyUI:UpdateConfig(name) then KittyUI:Success("config updated", name) else KittyUI:Error("could not update", "your executor has no file access.") end
+				if KittyUI:UpdateConfiguration(name) then KittyUI:Success("config updated", name) else KittyUI:Error("could not update", "your executor has no file access.") end
 			end,
 		})
 		self:AddButton({
@@ -2720,11 +2720,11 @@ local function Elements(self, getParent)
 			Callback = function()
 				local name = selected()
 				if not name then return end
-				if KittyUI:LoadConfig(name) then
+				if KittyUI:LoadConfiguration(name) then
 					KittyUI:Success("config loaded", name)
 				else
 					KittyUI:Warning("not found", "That config no longer exists.")
-					KittyUI:RefreshConfigs()
+					KittyUI:RefreshConfigurations()
 				end
 			end,
 		})
@@ -2739,7 +2739,7 @@ local function Elements(self, getParent)
 					Content = '"' .. name .. '" will be removed from your workspace.',
 					Buttons = {
 						{ Title = "delete", Primary = true, Callback = function()
-							if KittyUI:DeleteConfig(name) then KittyUI:Info("deleted", name) end
+							if KittyUI:DeleteConfiguration(name) then KittyUI:Info("deleted", name) end
 						end },
 						{ Title = "cancel" },
 					},
@@ -4883,24 +4883,24 @@ local function decode(v)
 	return v
 end
 
-function KittyUI:SaveConfig(name)
+function KittyUI:SaveConfiguration(name)
 	if not writefile then return false end
 	local data = {}
 	for k, v in pairs(self.Flags) do
 		if type(k) ~= "string" or k:sub(1, 1) ~= "_" then data[k] = encode(v) end
 	end
 	pcall(function()
-		if makefolder and not isfolder(self.ConfigFolder) then makefolder(self.ConfigFolder) end
+		if makefolder and not isfolder(self.ConfigurationFolder) then makefolder(self.ConfigurationFolder) end
 	end)
-	local ok = pcall(writefile, self.ConfigFolder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
-	if ok then self:RefreshConfigs(name) end
+	local ok = pcall(writefile, self.ConfigurationFolder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+	if ok then self:RefreshConfigurations(name) end
 	return ok
 end
 
-function KittyUI:UpdateConfig(name) return self:SaveConfig(name) end
+function KittyUI:UpdateConfiguration(name) return self:SaveConfiguration(name) end
 
-function KittyUI:RefreshConfigs(select)
-	local names = self:ListConfigs()
+function KittyUI:RefreshConfigurations(select)
+	local names = self:ListConfigurations()
 	for _, dd in ipairs(self._configLists) do
 		pcall(function()
 			local keep = select or dd:Get()
@@ -4912,30 +4912,30 @@ function KittyUI:RefreshConfigs(select)
 	end
 end
 
-function KittyUI:UniqueConfigName(base)
+function KittyUI:UniqueConfigurationName(base)
 	local existing = {}
-	for _, n in ipairs(self:ListConfigs()) do existing[n:lower()] = true end
+	for _, n in ipairs(self:ListConfigurations()) do existing[n:lower()] = true end
 	if not existing[base:lower()] then return base end
 	local i = 1
 	while existing[(base .. " (" .. i .. ")"):lower()] do i = i + 1 end
 	return base .. " (" .. i .. ")"
 end
 
-function KittyUI:CreateConfig(name)
+function KittyUI:CreateConfiguration(name)
 	name = tostring(name or ""):match("^%s*(.-)%s*$")
 	name = name:gsub("[^%w _%-]", "")
-	if name == "" then name = "Config" end
-	name = self:UniqueConfigName(name)
-	if self:SaveConfig(name) then return name end
+	if name == "" then name = "Configurationuration" end
+	name = self:UniqueConfigurationName(name)
+	if self:SaveConfiguration(name) then return name end
 	return nil
 end
 
-function KittyUI:ListConfigs()
+function KittyUI:ListConfigurations()
 	local names = {}
 	if not (listfiles and isfolder) then return names end
 	pcall(function()
-		if isfolder(self.ConfigFolder) then
-			for _, path in ipairs(listfiles(self.ConfigFolder)) do
+		if isfolder(self.ConfigurationFolder) then
+			for _, path in ipairs(listfiles(self.ConfigurationFolder)) do
 				local n = tostring(path):match("([^/\\]+)%.json$")
 				if n then table.insert(names, n) end
 			end
@@ -4945,18 +4945,18 @@ function KittyUI:ListConfigs()
 	return names
 end
 
-function KittyUI:DeleteConfig(name)
+function KittyUI:DeleteConfiguration(name)
 	if not (delfile and isfile) then return false end
-	local path = self.ConfigFolder .. "/" .. name .. ".json"
+	local path = self.ConfigurationFolder .. "/" .. name .. ".json"
 	if not isfile(path) then return false end
 	local ok = pcall(delfile, path)
-	if ok then self:RefreshConfigs() end
+	if ok then self:RefreshConfigurations() end
 	return ok
 end
 
-function KittyUI:LoadConfig(name)
+function KittyUI:LoadConfiguration(name)
 	if not (readfile and isfile) then return false end
-	local path = self.ConfigFolder .. "/" .. name .. ".json"
+	local path = self.ConfigurationFolder .. "/" .. name .. ".json"
 	if not isfile(path) then return false end
 	local ok, data = pcall(function() return HttpService:JSONDecode(readfile(path)) end)
 	if not ok then return false end
@@ -4969,7 +4969,7 @@ end
 
 function KittyUI:GetQuitSkip()
 	if not (readfile and isfile) then return false end
-	local path = self.ConfigFolder .. "/quit-confirm.json"
+	local path = self.ConfigurationFolder .. "/quit-confirm.json"
 	local ok, res = pcall(function()
 		if not isfile(path) then return false end
 		return tostring(readfile(path)):match("^%s*(.-)%s*$") == "true"
@@ -4980,9 +4980,9 @@ end
 function KittyUI:SetQuitSkip(v)
 	if not writefile then return false end
 	pcall(function()
-		if makefolder and isfolder and not isfolder(self.ConfigFolder) then makefolder(self.ConfigFolder) end
+		if makefolder and isfolder and not isfolder(self.ConfigurationFolder) then makefolder(self.ConfigurationFolder) end
 	end)
-	return (pcall(writefile, self.ConfigFolder .. "/quit-confirm.json", v and "true" or "false"))
+	return (pcall(writefile, self.ConfigurationFolder .. "/quit-confirm.json", v and "true" or "false"))
 end
 
 function KittyUI:Destroy()
