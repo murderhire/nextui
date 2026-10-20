@@ -560,6 +560,7 @@ local function Text(parent, text, props)
 		BackgroundTransparency = 1, Text = text, Font = T.Font, TextSize = 13,
 		TextColor3 = "$Text", TextXAlignment = Enum.TextXAlignment.Left, Parent = parent,
 	}
+	props.RichText = true,
 	for k, v in pairs(props or {}) do p[k] = v end
 	return New("TextLabel", p)
 end
@@ -737,6 +738,7 @@ local function setupTooltip(gui)
 		Size = UDim2.fromOffset(0, 0), BackgroundColor3 = "$Element", GlassKey = "Popup", BorderSizePixel = 0, Parent = gui,
 	}, { Corner(5), Stroke("Border", 0.1), Pad(8, 4, 8, 4) })
 	local txt = Text(tip, "", {
+		RichText = true,
 		ZIndex = 1001, AutomaticSize = Enum.AutomaticSize.XY, Size = UDim2.fromOffset(0, 0),
 		TextSize = 12, TextWrapped = false,
 	})
@@ -4767,6 +4769,7 @@ function KittyUI:CreateWatermark(o)
 			LayoutOrder = 1, Parent = holder,
 		})
 		local nameLabel = Text(holder, TC(name), {
+			RichText = true,
 			AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), TextColor3 = "$Sub", TextSize = 12, LayoutOrder = 2,
 			Visible = name ~= nil and name ~= "",
 		})
