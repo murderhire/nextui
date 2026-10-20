@@ -74,7 +74,7 @@ local KittyUI = {
 	ThemeName = "Rose",
 	ThemeOrder = table.clone(ThemeOrder),
 	ToggleKeys = { Enum.KeyCode.Insert, Enum.KeyCode.RightShift },
-	ConfigFolder = "KittyUI",
+	ConfigFolder = "kitty",
 	Windows = {},
 	_conns = {}, _glass = {}, _glassLayers = {}, _binds = {}, _paints = {}, _drops = {}, _configLists = {}, _tips = {}, _index = {}, _scrollers = {},
 	TipLength = 16,
@@ -320,7 +320,7 @@ function KittyUI:SetGlassBlur(v)
 	updateBlur()
 end
 
-local ICON_CACHE_FILE = "KittyUI/icons.lua"
+local ICON_CACHE_FILE = "kitty/icons.lua"
 
 local function ensureFolder(path)
 	pcall(function()
@@ -440,11 +440,11 @@ local function urlAsset(url)
 	if not getAsset then return nil, "getcustomasset is not supported by your executor" end
 	pcall(function()
 		if makefolder and isfolder then
-			if not isfolder("KittyUI") then makefolder("KittyUI") end
-			if not isfolder("KittyUI/cache") then makefolder("KittyUI/cache") end
+			if not isfolder("kitty") then makefolder("kitty") end
+			if not isfolder("kitty/cache") then makefolder("kitty/cache") end
 		end
 	end)
-	local path = "KittyUI/cache/" .. url:gsub("[^%w]", "_"):sub(-80) .. ".png"
+	local path = "kitty/cache/" .. url:gsub("[^%w]", "_"):sub(-80) .. ".png"
 	if not isfile(path) then
 		local ok, data = pcall(function() return game:HttpGet(url) end)
 		if not ok then return nil, "download failed: " .. tostring(data) end
