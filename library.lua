@@ -4925,7 +4925,7 @@ end
 function KittyUI:CreateConfiguration(name)
 	name = tostring(name or ""):match("^%s*(.-)%s*$")
 	name = name:gsub("[^%w _%-]", "")
-	if name == "" then name = "Configurationuration" end
+	if name == "" then name = "configuration" end
 	name = self:UniqueConfigurationName(name)
 	if self:SaveConfiguration(name) then return name end
 	return nil
